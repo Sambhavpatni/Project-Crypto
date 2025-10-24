@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cryptocurrency Portfolio</title>
+  <link rel="stylesheet" href="portfolio.css">
+</head>
+<body>
+
+  <header>
+    <h1> Crypto Trade Portfolio</h1>
+    <nav>
+      <ul>
+        <li><a href="index_final_with_portfolio.html">Home</a></li>
+        <li><a href="market.html">Market</a></li>
+        <li><a href="trade.html">Trade</a></li>
+        <li><a href="history.html">Transactions</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="portfolio-summary">
+      <h2>Portfolio Overview</h2>
+      <div class="summary-card">
+        <p>Total Value: <span id="total-value">$0.00</span></p>
+        <p>24h Change: <span id="24h-change">+0.00%</span></p>
+        <p>Portfolio Growth: <span id="growth">+0.00%</span></p>
+      </div>
+    </section>
+
+    <section class="portfolio-assets">
+      <h2>Your Holdings</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Asset</th>
+            <th>Amount</th>
+            <th>Current Value</th>
+            <th>Profit/Loss</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="assets-list">
+          <!-- Example rows, dynamically generated -->
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 CryptoTrading.com</p>
+  </footer>
+
+  <script src="portfolio.js"></script>
+</body>
+</html>

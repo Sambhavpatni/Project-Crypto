@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Crypto Market</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0f172a;
+      color: white;
+      padding: 2rem;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .search-container {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    input[type="text"] {
+      padding: 0.5rem;
+      width: 300px;
+      border-radius: 6px;
+      border: none;
+      outline: none;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #1e293b;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid #334155;
+    }
+
+    th {
+      background-color: #0ea5e9;
+      color: black;
+    }
+
+    tr:hover {
+      background-color: #334155;
+      cursor: pointer;
+    }
+
+    .chart-container {
+      margin-top: 3rem;
+      background-color: #1e293b;
+      padding: 1rem;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Live Crypto Market</h1>
+
+  <div class="search-container">
+    <input type="text" id="searchInput" placeholder="Search for a coin (e.g., Bitcoin)" />
+  </div>
+
+  <table id="crypto-table">
+    <thead>
+      <tr>
+        <th>Coin</th>
+        <th>Symbol</th>
+        <th>Price (USD)</th>
+        <th>24h Change</th>
+        <th>Market Cap</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Filled dynamically -->
+    </tbody>
+  </table>
+
+  <div class="chart-container">
+    <canvas id="priceChart" width="600" height="300"></canvas>
+  </div>
+
+  <script>
+    let allData = [];
+
+    async function fetchCryptoData() {
+      const url = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=25&page=1&sparkline=true';
+      const tableBody = document.querySelector("#crypto-table tbody");
+
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        allData = data;
+        renderTable(data);
+      } catch (err) {
+        tableBody.innerHTML = `<tr><td colspan="5">Failed to load data</td></tr>`;
+        console.error(err);
+      }
+    }
+
+    function renderTable(data) {
+      const tableBody = document.querySelector("#crypto-table tbody");
+      tableBody.innerHTML = '';
+
+      data.forEach((coin, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${coin.name}</td>
+          <td>${coin.symbol.toUpperCase()}</td>
+          <td>$${coin.current_price.toLocaleString()}</td>
+          <td style="color: ${coin.price_change_percentage_24h >= 0 ? 'lightgreen' : 'red'}">
+            ${coin.price_change_percentage_24h.toFixed(2)}%
+          </td>
+          <td>$${coin.market_cap.toLocaleString()}</td>
+        `;
+        row.addEventListener('click', () => drawChart(coin));
+        tableBody.appendChild(row);
+      });
+    }
+
+    function drawChart(coin) {
+      const ctx = document.getElementById('priceChart').getContext('2d');
+      const sparkline = coin.sparkline_in_7d.price;
+
+      if (window.priceChart) {
+        window.priceChart.destroy();
+      }
+
+      window.priceChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: sparkline.map((_, i) => i),
+          datasets: [{
+            label: `${coin.name} - 7 Day Trend`,
+            data: sparkline,
+            borderColor: '#0ea5e9',
+            backgroundColor: 'rgba(14, 165, 233, 0.1)',
+            tension: 0.2,
+            fill: true,
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              labels: { color: 'white' }
+            }
+          },
+          scales: {
+            x: { display: false },
+            y: {
+              ticks: { color: 'white' },
+              grid: { color: '#334155' }
+            }
+          }
+        }
+      });
+    }
+
+    document.getElementById('searchInput').addEventListener('input', function () {
+      const query = this.value.toLowerCase();
+      const filtered = allData.filter(coin => 
+        coin.name.toLowerCase().includes(query) || 
+        coin.symbol.toLowerCase().includes(query)
+      );
+      renderTable(filtered);
+    });
+
+    fetchCryptoData();
+    setInterval(fetchCryptoData, 60000); // refresh every 60 seconds
+  </script>
+</body>
+</html>

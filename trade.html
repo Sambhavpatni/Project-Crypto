@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Trade Crypto</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0f172a;
+      color: white;
+      padding: 2rem;
+    }
+
+    .trade-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: #1e293b;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #0ea5e9;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      margin-top: 1rem;
+    }
+
+    select, input {
+      width: 100%;
+      padding: 0.75rem;
+      margin-top: 0.5rem;
+      border-radius: 6px;
+      border: none;
+    }
+
+    button {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background-color: #0ea5e9;
+      color: black;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      width: 100%;
+      cursor: pointer;
+    }
+
+    .log {
+      margin-top: 2rem;
+      background: #0f172a;
+      padding: 1rem;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .log p {
+      margin: 0.5rem 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="trade-container">
+    <h2>Trade Cryptocurrency</h2>
+    <label for="pair">Select Trading Pair:</label>
+    <select id="pair">
+      <option value="BTC/USDT">BTC/USDT</option>
+      <option value="ETH/USDT">ETH/USDT</option>
+      <option value="BNB/USDT">BNB/USDT</option>
+    </select>
+
+    <label for="type">Order Type:</label>
+    <select id="type">
+      <option value="buy">Buy</option>
+      <option value="sell">Sell</option>
+    </select>
+
+    <label for="amount">Amount:</label>
+    <input type="number" id="amount" placeholder="Enter amount" />
+
+    <label for="price">Price per unit (USDT):</label>
+    <input type="number" id="price" placeholder="Enter price" />
+
+    <button onclick="placeOrder()">Place Order</button>
+
+    <div class="log" id="log">
+      <p><strong>Order History</strong></p>
+    </div>
+  </div>
+
+  <script>
+    function placeOrder() {
+      const pair = document.getElementById("pair").value;
+      const type = document.getElementById("type").value;
+      const amount = parseFloat(document.getElementById("amount").value);
+      const price = parseFloat(document.getElementById("price").value);
+      const log = document.getElementById("log");
+
+      if (!amount || !price || amount <= 0 || price <= 0) {
+        alert("Please enter valid amount and price.");
+        return;
+      }
+
+      const total = (amount * price).toFixed(2);
+      const msg = `✅ ${type.toUpperCase()} ${amount} ${pair.split('/')[0]} at $${price} = $${total}`;
+
+      const p = document.createElement("p");
+      p.textContent = msg;
+      log.appendChild(p);
+
+      document.getElementById("amount").value = '';
+      document.getElementById("price").value = '';
+    }
+  </script>
+
+</body>
+</html>
+
+

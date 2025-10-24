@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trade History</title>
+  <link rel="stylesheet" href="history.css">
+</head>
+<body>
+
+  <header>
+    <h1>Trade History</h1>
+    <nav>
+      <ul>
+        <li><a href="index_final_with_portfolio.html">Home</a></li>
+        <li><a href="market.html">Market</a></li>
+        <li><a href="portfolio.html">Portfolio</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="history-filter">
+      <h2>Filter Trades</h2>
+      <form id="filter-form">
+        <label for="asset">Asset:</label>
+        <select id="asset" name="asset">
+          <option value="">All</option>
+          <option value="Bitcoin">Bitcoin</option>
+          <option value="Ethereum">Ethereum</option>
+          <option value="Litecoin">Litecoin</option>
+        </select>
+
+        <label for="action">Action:</label>
+        <select id="action" name="action">
+          <option value="">All</option>
+          <option value="Buy">Buy</option>
+          <option value="Sell">Sell</option>
+        </select>
+
+        <label for="date">Date:</label>
+        <input type="date" id="date" name="date">
+
+        <button type="submit">Apply Filters</button>
+      </form>
+    </section>
+
+    <section class="trade-history">
+      <h2>Your Trade History</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Trade Date</th>
+            <th>Asset</th>
+            <th>Action</th>
+            <th>Amount</th>
+            <th>Price</th>
+            <th>Total Value</th>
+            <th>Transaction Fee</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="history-list">
+          <!-- Example rows, dynamically generated -->
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 CryptoTrading.com</p>
+  </footer>
+
+  <script src="history.js"></script>
+</body>
+</html>

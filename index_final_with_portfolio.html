@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CryptoX  | Trading Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="syle_updated.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
+    
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="#" class="logo">
+                <i class="fas fa-coins"></i>
+                <span>CryptoX Pro</span>
+            </a>
+            
+            <nav>
+                <ul>
+                    <li><a href="index.html" class="active"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="market.html"><i class="fas fa-chart-line"></i> Markets</a></li>
+                    <li><a href="trade.html"><i class="fas fa-exchange-alt"></i> Trade</a></li>
+                    <li><a href="portfolio.html"><i class="fas fa-wallet"></i> Portfolio</a></li>
+                    <li><a href="history.html"><i class="fas fa-history"></i> History</a></li>
+                    <li><a href="news.html"><i class="fas fa-news"></i>News</a></li>
+                </ul>
+            </nav>
+            
+            <div class="auth-buttons">
+                <button class="btn btn-outline"><i class="fas fa-sign-in-alt"></i> <a href="login.html" class="login-btn">Login</a>
+                </button>
+                <button class="btn btn-primary"><i class="fas fa-user-plus"></i><a href="register.html" class="register-btn">Register</a></button>
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+          <div class="hero-content">
+            <h1>Crypto Trading Platform</h1>
+            <p>Trade 100+ cryptocurrencies with low fees, advanced charting tools, and 24/7 customer support. Whether you're a beginner or professional trader, we've got you covered.</p>
+            <div class="hero-buttons">
+              <button class="btn btn-primary">
+                <i class="fas fa-exchange-alt"><a href="trade.html">Start Trading</a></i>
+              </button>
+              <button class="btn btn-outline">
+                <i class="fas fa-play-circle"><a href="https://www.youtube.com/watch?v=yAbHROWul58">Watch Tutorial</a></i>
+              </button>
+            </div>
+          </div>
+          <div class="hero-image">
+            <img src="hero-image.png" alt="Crypto Trading Platform">
+          </div>
+        </div>
+      </section>
+      
+
+    <section class="market-ticker">
+        <div class="ticker-container">
+            <div class="ticker-item">
+                <img src="bitcoin-btc-logo.png" alt="Bitcoin">
+                <span>BTC</span>
+                <span>$42,356.78</span>
+                <span class="positive">+2.34%</span>
+            </div>
+            <div class="ticker-item">
+                <img src="ethereum-eth-logo.png" alt="Ethereum">
+                <span>ETH</span>
+                <span>$2,345.67</span>
+                <span class="positive">+1.56%</span>
+            </div>
+            <div class="ticker-item">
+                <img src="solana-sol-logo.png" alt="Solana">
+                <span>SOL</span>
+                <span>$102.45</span>
+                <span class="negative">-3.21%</span>
+            </div>
+            <div class="ticker-item">
+                <img src="cardano-ada-logo.png" alt="Cardano">
+                <span>ADA</span>
+                <span>$0.5678</span>
+                <span class="positive">+0.78%</span>
+            </div>
+        </div>
+    </section>
+    <main class="container">
+        <div class="chart-market-container" style="display: flex; flex-wrap: wrap; gap: 20px;">
+          <!-- Add cryptocurrency selector -->
+          <div class="crypto-selector">
+            <select id="cryptoSelect" class="crypto-select">
+              <option value="BTC/USDT">Bitcoin (BTC/USDT)</option>
+              <option value="ETH/USDT">Ethereum (ETH/USDT)</option>
+              <option value="SOL/USDT">Solana (SOL/USDT)</option>
+              <option value="XRP/USDT">Ripple (XRP/USDT)</option>
+              <option value="DOGE/USDT">Dogecoin (DOGE/USDT)</option>
+            </select>
+          </div>
+          
+          <section class="trading-section" style="flex: 2 1 60%; min-width: 300px;">
+            <div class="chart-container">
+              <div class="chart-header">
+                <div class="chart-title">
+                  <img id="cryptoLogo" src="bitcoin-btc-logo.png" alt="Bitcoin">
+                  <h3 id="cryptoPair">BTC/USDT</h3>
+                  <span id="cryptoPrice">$42,356.78</span>
+                  <span id="cryptoChange" class="positive">+2.34%</span>
+                </div>
+                <div class="timeframes">
+                </div>
+              </div>
+              <section>
+                <canvas class="chart" id="btcChart"></canvas>
+                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                
+                <!-- Add the JavaScript to make the buttons interactive -->
+                <script>
+                  // Chart initialization and data fetching
+                  let cryptoChart;
+                  let currentCrypto = "BTC/USDT";
+                  let currentTimeframe = "1D";
+                  
+                  // Initialize the chart when the page loads
+                  document.addEventListener('DOMContentLoaded', function() {
+                    initChart();
+                    updateCryptoData(currentCrypto, currentTimeframe);
+                    
+                    // Add event listeners to timeframe buttons
+                    document.querySelectorAll('.timeframe-btn').forEach(button => {
+                      button.addEventListener('click', function() {
+                        // Remove active class from all buttons
+                        document.querySelectorAll('.timeframe-btn').forEach(btn => {
+                          btn.classList.remove('active');
+                        });
+                        
+                        // Add active class to clicked button
+                        this.classList.add('active');
+                        
+                        // Update timeframe and refresh chart
+                        currentTimeframe = this.getAttribute('data-period');
+                        updateCryptoData(currentCrypto, currentTimeframe);
+                      });
+                    });
+                    
+                    // Add event listener to crypto selector
+                    document.getElementById('cryptoSelect').addEventListener('change', function() {
+                      currentCrypto = this.value;
+                      updateCryptoData(currentCrypto, currentTimeframe);
+                    });
+                  });
+                  
+                  function initChart() {
+                    const ctx = document.getElementById('btcChart').getContext('2d');
+                    
+                    cryptoChart = new Chart(ctx, {
+                      type: 'line',
+                      data: {
+                        labels: [],
+                        datasets: [{
+                          label: 'Price',
+                          data: [],
+                          borderColor: 'rgb(75, 192, 192)',
+                          tension: 0.1,
+                          pointRadius: 0,
+                          borderWidth: 2
+                        }]
+                      },
+                      options: {
+                        responsive: true,
+                        interaction: {
+                          mode: 'index',
+                          intersect: false,
+                        },
+                        plugins: {
+                          tooltip: {
+                            callbacks: {
+                              label: function(context) {
+                                return `$${context.parsed.y.toFixed(2)}`;
+                              }
+                            }
+                          }
+                        },
+                        scales: {
+                          x: {
+                            grid: {
+                              display: false
+                            }
+                          },
+                          y: {
+                            position: 'right'
+                          }
+                        }
+                      }
+                    });
+                  }
+                  
+                  function updateCryptoData(crypto, timeframe) {
+                    // Update the UI elements
+                    document.getElementById('cryptoPair').textContent = crypto;
+                    
+                    // Get crypto symbol for logo
+                    const cryptoSymbol = crypto.split('/')[0].toLowerCase();
+                    document.getElementById('cryptoLogo').src = `${cryptoSymbol}-logo.png`;
+                    document.getElementById('cryptoLogo').alt = crypto.split('/')[0];
+                    
+                    // Fetch data - this would normally come from an API
+                    fetchCryptoData(crypto, timeframe)
+                      .then(data => {
+                        // Update price and change data
+                        document.getElementById('cryptoPrice').textContent = `$${data.currentPrice.toFixed(2)}`;
+                        
+                        const changeElement = document.getElementById('cryptoChange');
+                        const change = data.percentChange;
+                        changeElement.textContent = `${change > 0 ? '+' : ''}${change.toFixed(2)}%`;
+                        changeElement.className = change >= 0 ? 'positive' : 'negative';
+                        
+                        // Update the chart
+                        updateChart(data.chartData);
+                      })
+                      .catch(error => {
+                        console.error('Error fetching crypto data:', error);
+                      });
+                  }
+                  
+                  function fetchCryptoData(crypto, timeframe) {
+                    // This would be replaced with a real API call in production
+                    // For example, using CoinGecko or TradingView API
+                    return new Promise(resolve => {
+                      // Simulate API response delay
+                      setTimeout(() => {
+                        // Generate mock data for demonstration
+                        const mockPrices = [];
+                        const mockLabels = [];
+                        
+                        // Create different data patterns based on timeframe
+                        const dataPoints = timeframe === '1H' ? 60 : 
+                                           timeframe === '4H' ? 240 : 
+                                           timeframe === '1D' ? 24 : 14;
+                        
+                        // Generate random starting price based on the cryptocurrency
+                        let basePrice = 0;
+                        if (crypto.includes('BTC')) basePrice = 42000 + Math.random() * 2000;
+                        else if (crypto.includes('ETH')) basePrice = 2200 + Math.random() * 200;
+                        else if (crypto.includes('SOL')) basePrice = 120 + Math.random() * 20;
+                        else if (crypto.includes('XRP')) basePrice = 0.5 + Math.random() * 0.1;
+                        else basePrice = 0.1 + Math.random() * 0.05; // DOGE
+                        
+                        for (let i = 0; i < dataPoints; i++) {
+                          // Create slightly random price movements
+                          basePrice = basePrice * (1 + (Math.random() - 0.5) * 0.01);
+                          mockPrices.push(basePrice);
+                          
+                          // Create labels based on timeframe
+                          if (timeframe === '1H') {
+                            mockLabels.push(`${i}m`);
+                          } else if (timeframe === '4H') {
+                            mockLabels.push(`${Math.floor(i/60)}h${i%60}m`);
+                          } else if (timeframe === '1D') {
+                            mockLabels.push(`${i}h`);
+                          } else {
+                            mockLabels.push(`Day ${i+1}`);
+                          }
+                        }
+                        
+                        // Calculate percent change from start to end
+                        const percentChange = ((mockPrices[mockPrices.length-1] - mockPrices[0]) / mockPrices[0]) * 100;
+                        
+                        resolve({
+                          currentPrice: mockPrices[mockPrices.length-1],
+                          percentChange: percentChange,
+                          chartData: {
+                            labels: mockLabels,
+                            prices: mockPrices
+                          }
+                        });
+                      }, 500);
+                    });
+                  }
+                  
+                  function updateChart(chartData) {
+                    cryptoChart.data.labels = chartData.labels;
+                    cryptoChart.data.datasets[0].data = chartData.prices;
+                    cryptoChart.update();
+                  }
+                </script>
+              </section>
+            </div>
+          </section>
+        </div>
+      </main>      
+                <script>
+                    const ctx = document.getElementById('btcChart').getContext('2d');
+
+                
+                    const labels = Array.from({length: 24}, (_, i) => {
+                      const date = new Date();
+                      date.setHours(date.getHours() - 23 + i);
+                      return date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+                    });
+                
+                    const dataPoints = Array.from({length: 24}, (_, i) => {
+                      const base = 42000;
+                      const variation = Math.sin(i/3) * 500 + Math.random() * 200;
+                      return base + variation;
+                    });
+                
+                    const chart = new Chart(ctx, {
+                      type: 'line',
+                      data: {
+                        labels: labels,
+                        datasets: [{
+                          label: 'BTC Price',
+                          data: dataPoints,
+                          borderColor: '#6c5ce7',
+                          borderWidth: 2,
+                          fill: false,
+                          tension: 0.1,
+                          pointRadius: 0,
+                          pointHoverRadius: 5
+                        }]
+                      },
+                      options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                          legend: {
+                            display: false
+                          },
+                          tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                              label: function(context) {
+                                return 'Price: $' + context.parsed.y.toLocaleString();
+                              }
+                            }
+                          }
+                        },
+                        scales: {
+                          x: {
+                            ticks: { color: '#dcdde1' },
+                            grid: { display: false }
+                          },
+                          y: {
+                            ticks: {
+                              color: '#dcdde1',
+                              callback: function(value) {
+                                return '$' + value.toLocaleString();
+                              }
+                            },
+                            grid: { color: '#353b48' }
+                          }
+                        },
+                        interaction: {
+                          mode: 'nearest',
+                          axis: 'x',
+                          intersect: false
+                        }
+                      }
+                    });
+                
+                    const priceElement = document.querySelector('.chart-price');
+                    const changeElement = document.querySelector('.chart-change');
+                
+                    setInterval(() => {
+                      const lastPrice = dataPoints[dataPoints.length - 1];
+                      const newPrice = lastPrice * (1 + (Math.random() * 0.002 - 0.001));
+                      dataPoints.push(newPrice);
+                      dataPoints.shift();
+                
+                      chart.data.datasets[0].data = dataPoints;
+                      chart.update();
+                
+                      priceElement.textContent = '$' + newPrice.toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                      });
+                
+                      const changePercent = ((newPrice - 42000) / 42000 * 100).toFixed(2);
+                      const isPositive = changePercent >= 0;
+                
+                      changeElement.textContent = (isPositive ? '+' : '') + changePercent + '%';
+                      changeElement.className = 'chart-change ' + (isPositive ? 'positive' : 'negative');
+                    }, 3000);
+                  </script>
+                  </section>
+    </section>
+    <section class="market-section" style="flex: 1 1 35%; min-width: 300px;">
+    <section class="market-section">
+            <h2 class="section-title"><i class="fas fa-chart-bar"></i> Market Overview</h2>
+            
+            <div class="market-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Asset</th>
+                            <th>Price</th>
+                            <th>24h Change</th>
+                            <th>24h Volume</th>
+                            <th>Market Cap</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="coin-info">
+                                    <img src="bitcoin-btc-logo.png" alt="Bitcoin">
+                                    <span>Bitcoin (BTC)</span>
+                                </div>
+                            </td>
+                            <td>$42,356.78</td>
+                            <td class="positive">+2.34%</td>
+                            <td>$24.5B</td>
+                            <td>$802.3B</td>
+                            <td><button class="trade-btn"><a href="trade.html">Trade</a></button></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="coin-info">
+                                    <img src="ethereum-eth-logo.png" alt="Ethereum">
+                                    <span>Ethereum (ETH)</span>
+                                </div>
+                            </td>
+                            <td>$2,345.67</td>
+                            <td class="positive">+1.56%</td>
+                            <td>$12.3B</td>
+                            <td>$281.2B</td>
+                            <td><button class="trade-btn"><a href="trade.html">Trade</a></button></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="coin-info">
+                                    <img src="solana-sol-logo.png" alt="Solana">
+                                    <span>Solana (SOL)</span>
+                                </div>
+                            </td>
+                            <td>$102.45</td>
+                            <td class="negative">-3.21%</td>
+                            <td>$2.4B</td>
+                            <td>$42.1B</td>
+                            <td><button class="trade-btn"><a href="trade.html">Trade</a></button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </section>
+  </div>
+  
+        
+        <section class="portfolio-section">
+            <h2 class="section-title"><i class="fas fa-wallet"></i> Your Portfolio</h2>
+            
+            <div class="portfolio-stats">
+                <div class="stat-card">
+                    <h3>Total Balance</h3>
+                    <p>$12,456.78</p>
+                </div>
+                <div class="stat-card">
+                    <h3>24h Change</h3>
+                    <p class="positive">+$345.67 (+2.85%)</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Assets</h3>
+                    <p>7</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Allocation</h3>
+                    <p>65% Crypto, 35% Cash</p>
+                </div>
+            </div>
+            
+            <div class="portfolio-assets">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Asset</th>
+                            <th>Holdings</th>
+                            <th>Avg. Buy Price</th>
+                            <th>Current Price</th>
+                            <th>P&L</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="coin-info">
+                                    <img src="bitcoin-btc-logo.png" alt="Bitcoin">
+                                    <span>Bitcoin (BTC)</span>
+                                </div>
+                            </td>
+                            <td>0.25 BTC ($10,589.20)</td>
+                            <td>$38,456.78</td>
+                            <td>$42,356.78</td>
+                            <td class="positive">+$975.00 (+10.14%)</td>
+                            <td>
+                                <button class="trade-btn"><a href="trade.html">Trade</a></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="coin-info">
+                                    <img src="ethereum-eth-logo.png" alt="Ethereum">
+                                    <span>Ethereum (ETH)</span>
+                                </div>
+                            </td>
+                            <td>2.5 ETH ($5,864.18)</td>
+                            <td>$2,145.67</td>
+                            <td>$2,345.67</td>
+                            <td class="positive">+$500.00 (+9.32%)</td>
+                            <td>
+                                <button class="trade-btn"><a href ="trade.html">Trade</a></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    
+</main>
+
+
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+        
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            themeToggle.innerHTML = newTheme === 'dark' 
+                ? '<i class="fas fa-moon"></i>' 
+                : '<i class="fas fa-sun"></i>';
+        });
+
+        // Initialize Charts
+        function initCharts() {
+            // BTC Chart
+            const btcCtx = document.getElementById('btcChart').getContext('2d');
+            new Chart(btcCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'BTC Price',
+                        data: [32000, 38000, 40000, 42000, 41000, 42356],
+                        borderColor: '#6c5ce7',
+                        borderWidth: 2,
+                        fill: false,
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: false
+                        }
+                    }
+                }
+            });
+        }
+
+        // Trading Form Logic
+        document.getElementById('side').addEventListener('change', function() {
+            const btn = document.getElementById('placeOrderBtn');
+            if (this.value === 'Sell') {
+                btn.textContent = 'Sell ' + document.getElementById('pair').value.split('/')[0];
+                btn.className = 'order-btn sell';
+            } else {
+                btn.textContent = 'Buy ' + document.getElementById('pair').value.split('/')[0];
+                btn.className = 'order-btn';
+            }
+        });
+
+        document.getElementById('pair').addEventListener('change', function() {
+            const side = document.getElementById('side').value;
+            const btn = document.getElementById('placeOrderBtn');
+            const coin = this.value.split('/')[0];
+            btn.textContent = side === 'Sell' ? 'Sell ' + coin : 'Buy ' + coin;
+        });
+
+        // Calculate total when amount changes
+        document.getElementById('amount').addEventListener('input', function() {
+            const amount = parseFloat(this.value) || 0;
+            const price = 42356.78; // In a real app, get current price from API
+            document.getElementById('total').value = (amount * price).toFixed(2);
+        });
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            initCharts();
+        });
+
+        // Backend API Integration (example)
+        async function placeOrder(orderData) {
+            try {
+                const response = await fetch('/api/orders', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem('token')
+                    },
+                    body: JSON.stringify(orderData)
+                });
+                return await response.json();
+            } catch (error) {
+                console.error('Error placing order:', error);
+                return { success: false, error: 'Failed to place order' };
+            }
+        }
+
+        // Example of how to use the placeOrder function
+        document.getElementById('placeOrderBtn').addEventListener('click', async function() {
+            const orderData = {
+                pair: document.getElementById('pair').value,
+                side: document.getElementById('side').value,
+                amount: document.getElementById('amount').value,
+                price: document.getElementById('price').value || 'market'
+            };
+            
+            const result = await placeOrder(orderData);
+            if (result.success) {
+                alert('Order placed successfully!');
+                // Refresh portfolio data
+            } else {
+                alert('Error: ' + result.error);
+            }
+        });
+    </script>
+</body>
+</html>
